@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package grades;
+
+option go_package = "./gen/grades";
+
+service Grades {
+  rpc GetLessonGrades (GetLessonGradesRequest) returns (GetLessonGradesResponse) {}
+  rpc GetAllLessonsGradesByStudentID (GetAllLessonsGradesByStudentIDRequest) returns (GetAllLessonsGradesByStudentIDResponse) {}
+  rpc SetGrade (SetGradeRequest) returns (SetGradeResponse) {}
+}
+
+message SetGradeRequest {
+  int64 student_id = 1;
+  string lesson_name = 2;
+  int64 grade = 3;
+}
+
+message SetGradeResponse {
+  int64 student_id = 1;
+}
+
+message Grade {
+  int64 student_id = 1;
+  string lesson_name = 2;
+  string date = 3;
+  int64 grade = 4;
+}
+
+message GetAllLessonsGradesByStudentIDRequest {
+  int64 student_id = 1;
+}
+
+message GetAllLessonsGradesByStudentIDResponse {
+  repeated Grade grades = 2;
+}
+
+message GetLessonGradesRequest {
+  int64 student_id = 1;
+  string lesson_name = 2;
+}
+
+message GetLessonGradesResponse {
+  repeated Grade grades = 2;
+}
