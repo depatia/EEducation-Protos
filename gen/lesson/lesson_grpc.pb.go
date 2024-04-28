@@ -4,7 +4,7 @@
 // - protoc             v4.25.2
 // source: lesson.proto
 
-package lesson
+package lessons
 
 import (
 	context "context"
@@ -24,7 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type LessonClient interface {
 	SetLesson(ctx context.Context, in *SetLessonRequest, opts ...grpc.CallOption) (*SetLessonResponse, error)
 	GetAllTeacherLessons(ctx context.Context, in *GetAllTeacherLessonsRequest, opts ...grpc.CallOption) (*GetAllTeacherLessonsResponse, error)
-	IsLessonExists(ctx context.Context, in *IsLessonExistsRequest, opts ...grpc.CallOption) (*IsLessonExistsResponse, error)
+	IsLessonClassCombinationExists(ctx context.Context, in *IsLessonClassCombinationExistsRequest, opts ...grpc.CallOption) (*IsLessonClassCombinationExistsResponse, error)
+	IsClassExists(ctx context.Context, in *IsClassExistsRequest, opts ...grpc.CallOption) (*IsClassExistsResponse, error)
 }
 
 type lessonClient struct {
@@ -53,9 +54,18 @@ func (c *lessonClient) GetAllTeacherLessons(ctx context.Context, in *GetAllTeach
 	return out, nil
 }
 
-func (c *lessonClient) IsLessonExists(ctx context.Context, in *IsLessonExistsRequest, opts ...grpc.CallOption) (*IsLessonExistsResponse, error) {
-	out := new(IsLessonExistsResponse)
-	err := c.cc.Invoke(ctx, "/lesson.Lesson/IsLessonExists", in, out, opts...)
+func (c *lessonClient) IsLessonClassCombinationExists(ctx context.Context, in *IsLessonClassCombinationExistsRequest, opts ...grpc.CallOption) (*IsLessonClassCombinationExistsResponse, error) {
+	out := new(IsLessonClassCombinationExistsResponse)
+	err := c.cc.Invoke(ctx, "/lesson.Lesson/IsLessonClassCombinationExists", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lessonClient) IsClassExists(ctx context.Context, in *IsClassExistsRequest, opts ...grpc.CallOption) (*IsClassExistsResponse, error) {
+	out := new(IsClassExistsResponse)
+	err := c.cc.Invoke(ctx, "/lesson.Lesson/IsClassExists", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +78,8 @@ func (c *lessonClient) IsLessonExists(ctx context.Context, in *IsLessonExistsReq
 type LessonServer interface {
 	SetLesson(context.Context, *SetLessonRequest) (*SetLessonResponse, error)
 	GetAllTeacherLessons(context.Context, *GetAllTeacherLessonsRequest) (*GetAllTeacherLessonsResponse, error)
-	IsLessonExists(context.Context, *IsLessonExistsRequest) (*IsLessonExistsResponse, error)
+	IsLessonClassCombinationExists(context.Context, *IsLessonClassCombinationExistsRequest) (*IsLessonClassCombinationExistsResponse, error)
+	IsClassExists(context.Context, *IsClassExistsRequest) (*IsClassExistsResponse, error)
 	mustEmbedUnimplementedLessonServer()
 }
 
@@ -82,8 +93,11 @@ func (UnimplementedLessonServer) SetLesson(context.Context, *SetLessonRequest) (
 func (UnimplementedLessonServer) GetAllTeacherLessons(context.Context, *GetAllTeacherLessonsRequest) (*GetAllTeacherLessonsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllTeacherLessons not implemented")
 }
-func (UnimplementedLessonServer) IsLessonExists(context.Context, *IsLessonExistsRequest) (*IsLessonExistsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IsLessonExists not implemented")
+func (UnimplementedLessonServer) IsLessonClassCombinationExists(context.Context, *IsLessonClassCombinationExistsRequest) (*IsLessonClassCombinationExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsLessonClassCombinationExists not implemented")
+}
+func (UnimplementedLessonServer) IsClassExists(context.Context, *IsClassExistsRequest) (*IsClassExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsClassExists not implemented")
 }
 func (UnimplementedLessonServer) mustEmbedUnimplementedLessonServer() {}
 
@@ -134,20 +148,38 @@ func _Lesson_GetAllTeacherLessons_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Lesson_IsLessonExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IsLessonExistsRequest)
+func _Lesson_IsLessonClassCombinationExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsLessonClassCombinationExistsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LessonServer).IsLessonExists(ctx, in)
+		return srv.(LessonServer).IsLessonClassCombinationExists(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lesson.Lesson/IsLessonExists",
+		FullMethod: "/lesson.Lesson/IsLessonClassCombinationExists",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LessonServer).IsLessonExists(ctx, req.(*IsLessonExistsRequest))
+		return srv.(LessonServer).IsLessonClassCombinationExists(ctx, req.(*IsLessonClassCombinationExistsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Lesson_IsClassExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsClassExistsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LessonServer).IsClassExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lesson.Lesson/IsClassExists",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LessonServer).IsClassExists(ctx, req.(*IsClassExistsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,8 +200,12 @@ var Lesson_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Lesson_GetAllTeacherLessons_Handler,
 		},
 		{
-			MethodName: "IsLessonExists",
-			Handler:    _Lesson_IsLessonExists_Handler,
+			MethodName: "IsLessonClassCombinationExists",
+			Handler:    _Lesson_IsLessonClassCombinationExists_Handler,
+		},
+		{
+			MethodName: "IsClassExists",
+			Handler:    _Lesson_IsClassExists_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
