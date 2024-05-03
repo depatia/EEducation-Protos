@@ -48,7 +48,7 @@ message GetClassByUserIDRequest {
 }
 
 message GetClassByUserIDResponse {
-  int64 class_id = 1;
+  int64 classname = 1;
 }
 
 message SetClassnameRequest {
