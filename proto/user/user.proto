@@ -20,7 +20,7 @@ message Student {
 message SetUserRequest {
   string full_name = 1;
   string email = 2;
-  int64 phone = 3;
+  string phone = 3;
 }
 
 message SetUserResponse {
@@ -28,7 +28,7 @@ message SetUserResponse {
 }
 
 message GetStudentsByClassnameRequest {
-  int64 classname = 1;
+  string classname = 1;
 }
 
 message GetStudentsByClassnameResponse {
@@ -48,7 +48,7 @@ message GetClassByUserIDRequest {
 }
 
 message GetClassByUserIDResponse {
-  int64 classname = 1;
+  string classname = 1;
 }
 
 message SetClassnameRequest {
