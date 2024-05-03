@@ -7,9 +7,9 @@ option go_package = "./gen/user";
 service User {
   rpc SetUser (SetUserRequest) returns (SetUserResponse) {}
   rpc GetClassByUserID (GetClassByUserIDRequest) returns (GetClassByUserIDResponse) {}
-  rpc GetUsersByClassname (GetStudentsByClassnameRequest) returns (GetStudentsByClassnameResponse) {}
+  rpc GetStudentsByClassname (GetStudentsByClassnameRequest) returns (GetStudentsByClassnameResponse) {}
   rpc IsUserExists (IsUserExistsRequest) returns (IsUserExistsResponse) {}
-  rpc SetStudentClassname (SetClassnameRequest) returns (SetClassnameResponse) {}
+  rpc SetStudentClassname (SetStudentClassnameRequest) returns (SetStudentClassnameResponse) {}
 }
 
 message Student {
@@ -51,11 +51,11 @@ message GetClassByUserIDResponse {
   string classname = 1;
 }
 
-message SetClassnameRequest {
+message SetStudentClassnameRequest {
   int64 user_id = 1;
   string classname = 2;
 }
 
-message SetClassnameResponse {
+message SetStudentClassnameResponse {
   int64 status = 1;
 }

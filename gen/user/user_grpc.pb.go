@@ -24,9 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 type UserClient interface {
 	SetUser(ctx context.Context, in *SetUserRequest, opts ...grpc.CallOption) (*SetUserResponse, error)
 	GetClassByUserID(ctx context.Context, in *GetClassByUserIDRequest, opts ...grpc.CallOption) (*GetClassByUserIDResponse, error)
-	GetUsersByClassname(ctx context.Context, in *GetStudentsByClassnameRequest, opts ...grpc.CallOption) (*GetStudentsByClassnameResponse, error)
+	GetStudentsByClassname(ctx context.Context, in *GetStudentsByClassnameRequest, opts ...grpc.CallOption) (*GetStudentsByClassnameResponse, error)
 	IsUserExists(ctx context.Context, in *IsUserExistsRequest, opts ...grpc.CallOption) (*IsUserExistsResponse, error)
-	SetStudentClassname(ctx context.Context, in *SetClassnameRequest, opts ...grpc.CallOption) (*SetClassnameResponse, error)
+	SetStudentClassname(ctx context.Context, in *SetStudentClassnameRequest, opts ...grpc.CallOption) (*SetStudentClassnameResponse, error)
 }
 
 type userClient struct {
@@ -55,9 +55,9 @@ func (c *userClient) GetClassByUserID(ctx context.Context, in *GetClassByUserIDR
 	return out, nil
 }
 
-func (c *userClient) GetUsersByClassname(ctx context.Context, in *GetStudentsByClassnameRequest, opts ...grpc.CallOption) (*GetStudentsByClassnameResponse, error) {
+func (c *userClient) GetStudentsByClassname(ctx context.Context, in *GetStudentsByClassnameRequest, opts ...grpc.CallOption) (*GetStudentsByClassnameResponse, error) {
 	out := new(GetStudentsByClassnameResponse)
-	err := c.cc.Invoke(ctx, "/user.User/GetUsersByClassname", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.User/GetStudentsByClassname", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (c *userClient) IsUserExists(ctx context.Context, in *IsUserExistsRequest, 
 	return out, nil
 }
 
-func (c *userClient) SetStudentClassname(ctx context.Context, in *SetClassnameRequest, opts ...grpc.CallOption) (*SetClassnameResponse, error) {
-	out := new(SetClassnameResponse)
+func (c *userClient) SetStudentClassname(ctx context.Context, in *SetStudentClassnameRequest, opts ...grpc.CallOption) (*SetStudentClassnameResponse, error) {
+	out := new(SetStudentClassnameResponse)
 	err := c.cc.Invoke(ctx, "/user.User/SetStudentClassname", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -88,9 +88,9 @@ func (c *userClient) SetStudentClassname(ctx context.Context, in *SetClassnameRe
 type UserServer interface {
 	SetUser(context.Context, *SetUserRequest) (*SetUserResponse, error)
 	GetClassByUserID(context.Context, *GetClassByUserIDRequest) (*GetClassByUserIDResponse, error)
-	GetUsersByClassname(context.Context, *GetStudentsByClassnameRequest) (*GetStudentsByClassnameResponse, error)
+	GetStudentsByClassname(context.Context, *GetStudentsByClassnameRequest) (*GetStudentsByClassnameResponse, error)
 	IsUserExists(context.Context, *IsUserExistsRequest) (*IsUserExistsResponse, error)
-	SetStudentClassname(context.Context, *SetClassnameRequest) (*SetClassnameResponse, error)
+	SetStudentClassname(context.Context, *SetStudentClassnameRequest) (*SetStudentClassnameResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -104,13 +104,13 @@ func (UnimplementedUserServer) SetUser(context.Context, *SetUserRequest) (*SetUs
 func (UnimplementedUserServer) GetClassByUserID(context.Context, *GetClassByUserIDRequest) (*GetClassByUserIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetClassByUserID not implemented")
 }
-func (UnimplementedUserServer) GetUsersByClassname(context.Context, *GetStudentsByClassnameRequest) (*GetStudentsByClassnameResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByClassname not implemented")
+func (UnimplementedUserServer) GetStudentsByClassname(context.Context, *GetStudentsByClassnameRequest) (*GetStudentsByClassnameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStudentsByClassname not implemented")
 }
 func (UnimplementedUserServer) IsUserExists(context.Context, *IsUserExistsRequest) (*IsUserExistsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsUserExists not implemented")
 }
-func (UnimplementedUserServer) SetStudentClassname(context.Context, *SetClassnameRequest) (*SetClassnameResponse, error) {
+func (UnimplementedUserServer) SetStudentClassname(context.Context, *SetStudentClassnameRequest) (*SetStudentClassnameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetStudentClassname not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
@@ -162,20 +162,20 @@ func _User_GetClassByUserID_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_GetUsersByClassname_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_GetStudentsByClassname_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetStudentsByClassnameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).GetUsersByClassname(ctx, in)
+		return srv.(UserServer).GetStudentsByClassname(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.User/GetUsersByClassname",
+		FullMethod: "/user.User/GetStudentsByClassname",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetUsersByClassname(ctx, req.(*GetStudentsByClassnameRequest))
+		return srv.(UserServer).GetStudentsByClassname(ctx, req.(*GetStudentsByClassnameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -199,7 +199,7 @@ func _User_IsUserExists_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 func _User_SetStudentClassname_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetClassnameRequest)
+	in := new(SetStudentClassnameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -211,7 +211,7 @@ func _User_SetStudentClassname_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/user.User/SetStudentClassname",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).SetStudentClassname(ctx, req.(*SetClassnameRequest))
+		return srv.(UserServer).SetStudentClassname(ctx, req.(*SetStudentClassnameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -232,8 +232,8 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_GetClassByUserID_Handler,
 		},
 		{
-			MethodName: "GetUsersByClassname",
-			Handler:    _User_GetUsersByClassname_Handler,
+			MethodName: "GetStudentsByClassname",
+			Handler:    _User_GetStudentsByClassname_Handler,
 		},
 		{
 			MethodName: "IsUserExists",
