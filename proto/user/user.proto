@@ -24,7 +24,7 @@ message SetUserRequest {
 }
 
 message SetUserResponse {
-  int64 id = 1;
+  int64 status = 1;
 }
 
 message GetStudentsByClassnameRequest {
