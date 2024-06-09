@@ -25,6 +25,7 @@ type ScheduleClient interface {
 	SetSchedule(ctx context.Context, in *SetScheduleRequest, opts ...grpc.CallOption) (*SetScheduleResponse, error)
 	GetWeekScheduleByClass(ctx context.Context, in *GetWeekScheduleByClassRequest, opts ...grpc.CallOption) (*GetWeekScheduleByClassResponse, error)
 	SetHomework(ctx context.Context, in *SetHomeworkRequest, opts ...grpc.CallOption) (*SetHomeworkResponse, error)
+	SetWeeklySchedule(ctx context.Context, in *SetWeeklyScheduleRequest, opts ...grpc.CallOption) (*SetWeeklyScheduleResponse, error)
 }
 
 type scheduleClient struct {
@@ -62,6 +63,15 @@ func (c *scheduleClient) SetHomework(ctx context.Context, in *SetHomeworkRequest
 	return out, nil
 }
 
+func (c *scheduleClient) SetWeeklySchedule(ctx context.Context, in *SetWeeklyScheduleRequest, opts ...grpc.CallOption) (*SetWeeklyScheduleResponse, error) {
+	out := new(SetWeeklyScheduleResponse)
+	err := c.cc.Invoke(ctx, "/schedule.Schedule/SetWeeklySchedule", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ScheduleServer is the server API for Schedule service.
 // All implementations must embed UnimplementedScheduleServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type ScheduleServer interface {
 	SetSchedule(context.Context, *SetScheduleRequest) (*SetScheduleResponse, error)
 	GetWeekScheduleByClass(context.Context, *GetWeekScheduleByClassRequest) (*GetWeekScheduleByClassResponse, error)
 	SetHomework(context.Context, *SetHomeworkRequest) (*SetHomeworkResponse, error)
+	SetWeeklySchedule(context.Context, *SetWeeklyScheduleRequest) (*SetWeeklyScheduleResponse, error)
 	mustEmbedUnimplementedScheduleServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedScheduleServer) GetWeekScheduleByClass(context.Context, *GetW
 }
 func (UnimplementedScheduleServer) SetHomework(context.Context, *SetHomeworkRequest) (*SetHomeworkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetHomework not implemented")
+}
+func (UnimplementedScheduleServer) SetWeeklySchedule(context.Context, *SetWeeklyScheduleRequest) (*SetWeeklyScheduleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetWeeklySchedule not implemented")
 }
 func (UnimplementedScheduleServer) mustEmbedUnimplementedScheduleServer() {}
 
@@ -152,6 +166,24 @@ func _Schedule_SetHomework_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Schedule_SetWeeklySchedule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetWeeklyScheduleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ScheduleServer).SetWeeklySchedule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/schedule.Schedule/SetWeeklySchedule",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ScheduleServer).SetWeeklySchedule(ctx, req.(*SetWeeklyScheduleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Schedule_ServiceDesc is the grpc.ServiceDesc for Schedule service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var Schedule_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetHomework",
 			Handler:    _Schedule_SetHomework_Handler,
+		},
+		{
+			MethodName: "SetWeeklySchedule",
+			Handler:    _Schedule_SetWeeklySchedule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
