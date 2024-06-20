@@ -4,27 +4,110 @@ package user;
 
 option go_package = "./gen/user";
 
-service User {
-  rpc SetUser (SetUserRequest) returns (SetUserResponse) {}
-  rpc GetClassByUserID (GetClassByUserIDRequest) returns (GetClassByUserIDResponse) {}
+service UserService {
+  rpc Register (RegisterRequest) returns (RegisterResponse) {}
+  rpc Login (LoginRequest) returns (LoginResponse) {}
+  rpc UpdatePassword (UpdatePasswordRequest) returns (UpdatePasswordResponse) {}
+  rpc Validate (ValidateRequest) returns (ValidateResponse) {}
+  rpc SetPermissionLevel (SetPermissionLevelRequest) returns (SetPermissionLevelResponse) {}
+  rpc GetPermissionLevel (GetPermissionLevelRequest) returns (GetPermissionLevelResponse) {}
+  rpc FillUserProfile (FillUserProfileRequest) returns (FillUserProfileResponse) {}
+  rpc ChangeUserStatus (ChangeUserStatusRequest) returns (ChangeUserStatusResponse) {}
+  rpc IsUserActive (IsUserActiveRequest) returns (IsUserActiveResponse) {}
   rpc GetStudentsByClassname (GetStudentsByClassnameRequest) returns (GetStudentsByClassnameResponse) {}
-  rpc IsUserExists (IsUserExistsRequest) returns (IsUserExistsResponse) {}
-  rpc SetStudentClassname (SetStudentClassnameRequest) returns (SetStudentClassnameResponse) {}
 }
 
-message Student {
-  int64 id = 1;
-  string full_name = 2;
+// Auth
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
 }
 
-message SetUserRequest {
-  string full_name = 1;
-  string email = 2;
-  string phone = 3;
+message RegisterResponse {
+  int64 user_id = 1;
 }
 
-message SetUserResponse {
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+message UpdatePasswordRequest {
+  string email = 1;
+  string old_password = 2;
+  string new_password = 3;
+  string token = 4;
+}
+
+message UpdatePasswordResponse {
   int64 status = 1;
+}
+
+message ValidateRequest {
+  string token = 1;
+}
+
+message ValidateResponse {
+  int64 user_id = 1;
+}
+
+message SetPermissionLevelRequest {
+  int64 user_id = 1;
+  int64 permission_level = 2;
+  int64 initiator_id = 3;
+}
+
+message SetPermissionLevelResponse {
+  int64 status = 1;
+}
+
+message GetPermissionLevelRequest {
+  int64 user_id = 1;
+}
+
+message GetPermissionLevelResponse {
+  int64 permission_level = 1;
+}
+
+// User
+message Student {
+  string name = 1;
+  string lastname = 2;
+}
+
+message FillUserProfileRequest {
+  string name = 1;
+  string lastname = 2;
+  string middlename = 3;
+  string date_of_birth = 4;
+  string classname = 5;
+  int64 user_id = 6;
+}
+
+message FillUserProfileResponse {
+  int64 status = 1;
+}
+
+message ChangeUserStatusRequest {
+  int64 user_id = 1;
+  int64 initiator_id = 2;
+  bool active = 3;
+}
+
+message ChangeUserStatusResponse {
+  int64 status = 1;
+}
+
+message IsUserActiveRequest {
+  int64 user_id = 1;
+}
+
+message IsUserActiveResponse {
+  bool active = 1;
 }
 
 message GetStudentsByClassnameRequest {
@@ -33,29 +116,4 @@ message GetStudentsByClassnameRequest {
 
 message GetStudentsByClassnameResponse {
   repeated Student students = 1;
-}
-
-message IsUserExistsRequest {
-  int64 user_id = 1;
-}
-
-message IsUserExistsResponse {
-  bool is_exists = 1;
-}
-
-message GetClassByUserIDRequest {
-  int64 user_id = 1;
-}
-
-message GetClassByUserIDResponse {
-  string classname = 1;
-}
-
-message SetStudentClassnameRequest {
-  int64 user_id = 1;
-  string classname = 2;
-}
-
-message SetStudentClassnameResponse {
-  int64 status = 1;
 }
