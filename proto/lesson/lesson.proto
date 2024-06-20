@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package lesson;
 
-option go_package = "./gen/lessons";
+option go_package = "./gen/lesson";
 
 service Lesson {
   rpc SetLesson (SetLessonRequest) returns (SetLessonResponse) {}
