@@ -4,12 +4,11 @@ package schedule;
 
 option go_package = "./gen/schedule";
 
-
 service Schedule {
   rpc SetSchedule (SetScheduleRequest) returns (SetScheduleResponse) {}
   rpc GetWeekScheduleByClass (GetWeekScheduleByClassRequest) returns (GetWeekScheduleByClassResponse) {}
   rpc SetHomework (SetHomeworkRequest) returns (SetHomeworkResponse) {}
-  rpc SetWeeklySchedule (SetWeeklyScheduleRequest) returns (SetWeeklyScheduleResponse) {}
+  rpc SetWeeklySchedule (stream SetWeeklyScheduleRequest) returns (SetWeeklyScheduleResponse) {}
 }
 
 message Lesson {
@@ -57,7 +56,9 @@ message SetHomeworkResponse {
 }
 
 message SetWeeklyScheduleRequest {
-  ScheduleWeek schedule = 1;
+  bytes file_data = 1;
+  string filename = 2;
+  string sheet = 3;
 }
 
 message SetWeeklyScheduleResponse {

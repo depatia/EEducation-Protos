@@ -25,7 +25,7 @@ type ScheduleClient interface {
 	SetSchedule(ctx context.Context, in *SetScheduleRequest, opts ...grpc.CallOption) (*SetScheduleResponse, error)
 	GetWeekScheduleByClass(ctx context.Context, in *GetWeekScheduleByClassRequest, opts ...grpc.CallOption) (*GetWeekScheduleByClassResponse, error)
 	SetHomework(ctx context.Context, in *SetHomeworkRequest, opts ...grpc.CallOption) (*SetHomeworkResponse, error)
-	SetWeeklySchedule(ctx context.Context, in *SetWeeklyScheduleRequest, opts ...grpc.CallOption) (*SetWeeklyScheduleResponse, error)
+	SetWeeklySchedule(ctx context.Context, opts ...grpc.CallOption) (Schedule_SetWeeklyScheduleClient, error)
 }
 
 type scheduleClient struct {
@@ -63,13 +63,38 @@ func (c *scheduleClient) SetHomework(ctx context.Context, in *SetHomeworkRequest
 	return out, nil
 }
 
-func (c *scheduleClient) SetWeeklySchedule(ctx context.Context, in *SetWeeklyScheduleRequest, opts ...grpc.CallOption) (*SetWeeklyScheduleResponse, error) {
-	out := new(SetWeeklyScheduleResponse)
-	err := c.cc.Invoke(ctx, "/schedule.Schedule/SetWeeklySchedule", in, out, opts...)
+func (c *scheduleClient) SetWeeklySchedule(ctx context.Context, opts ...grpc.CallOption) (Schedule_SetWeeklyScheduleClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Schedule_ServiceDesc.Streams[0], "/schedule.Schedule/SetWeeklySchedule", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &scheduleSetWeeklyScheduleClient{stream}
+	return x, nil
+}
+
+type Schedule_SetWeeklyScheduleClient interface {
+	Send(*SetWeeklyScheduleRequest) error
+	CloseAndRecv() (*SetWeeklyScheduleResponse, error)
+	grpc.ClientStream
+}
+
+type scheduleSetWeeklyScheduleClient struct {
+	grpc.ClientStream
+}
+
+func (x *scheduleSetWeeklyScheduleClient) Send(m *SetWeeklyScheduleRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *scheduleSetWeeklyScheduleClient) CloseAndRecv() (*SetWeeklyScheduleResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(SetWeeklyScheduleResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
 }
 
 // ScheduleServer is the server API for Schedule service.
@@ -79,7 +104,7 @@ type ScheduleServer interface {
 	SetSchedule(context.Context, *SetScheduleRequest) (*SetScheduleResponse, error)
 	GetWeekScheduleByClass(context.Context, *GetWeekScheduleByClassRequest) (*GetWeekScheduleByClassResponse, error)
 	SetHomework(context.Context, *SetHomeworkRequest) (*SetHomeworkResponse, error)
-	SetWeeklySchedule(context.Context, *SetWeeklyScheduleRequest) (*SetWeeklyScheduleResponse, error)
+	SetWeeklySchedule(Schedule_SetWeeklyScheduleServer) error
 	mustEmbedUnimplementedScheduleServer()
 }
 
@@ -96,8 +121,8 @@ func (UnimplementedScheduleServer) GetWeekScheduleByClass(context.Context, *GetW
 func (UnimplementedScheduleServer) SetHomework(context.Context, *SetHomeworkRequest) (*SetHomeworkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetHomework not implemented")
 }
-func (UnimplementedScheduleServer) SetWeeklySchedule(context.Context, *SetWeeklyScheduleRequest) (*SetWeeklyScheduleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetWeeklySchedule not implemented")
+func (UnimplementedScheduleServer) SetWeeklySchedule(Schedule_SetWeeklyScheduleServer) error {
+	return status.Errorf(codes.Unimplemented, "method SetWeeklySchedule not implemented")
 }
 func (UnimplementedScheduleServer) mustEmbedUnimplementedScheduleServer() {}
 
@@ -166,22 +191,30 @@ func _Schedule_SetHomework_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Schedule_SetWeeklySchedule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetWeeklyScheduleRequest)
-	if err := dec(in); err != nil {
+func _Schedule_SetWeeklySchedule_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ScheduleServer).SetWeeklySchedule(&scheduleSetWeeklyScheduleServer{stream})
+}
+
+type Schedule_SetWeeklyScheduleServer interface {
+	SendAndClose(*SetWeeklyScheduleResponse) error
+	Recv() (*SetWeeklyScheduleRequest, error)
+	grpc.ServerStream
+}
+
+type scheduleSetWeeklyScheduleServer struct {
+	grpc.ServerStream
+}
+
+func (x *scheduleSetWeeklyScheduleServer) SendAndClose(m *SetWeeklyScheduleResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *scheduleSetWeeklyScheduleServer) Recv() (*SetWeeklyScheduleRequest, error) {
+	m := new(SetWeeklyScheduleRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(ScheduleServer).SetWeeklySchedule(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/schedule.Schedule/SetWeeklySchedule",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ScheduleServer).SetWeeklySchedule(ctx, req.(*SetWeeklyScheduleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
+	return m, nil
 }
 
 // Schedule_ServiceDesc is the grpc.ServiceDesc for Schedule service.
@@ -203,11 +236,13 @@ var Schedule_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "SetHomework",
 			Handler:    _Schedule_SetHomework_Handler,
 		},
+	},
+	Streams: []grpc.StreamDesc{
 		{
-			MethodName: "SetWeeklySchedule",
-			Handler:    _Schedule_SetWeeklySchedule_Handler,
+			StreamName:    "SetWeeklySchedule",
+			Handler:       _Schedule_SetWeeklySchedule_Handler,
+			ClientStreams: true,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
 	Metadata: "schedule.proto",
 }
