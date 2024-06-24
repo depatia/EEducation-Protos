@@ -25,6 +25,9 @@ type GradesClient interface {
 	GetLessonGrades(ctx context.Context, in *GetLessonGradesRequest, opts ...grpc.CallOption) (*GetLessonGradesResponse, error)
 	GetAllLessonsGradesByStudentID(ctx context.Context, in *GetAllLessonsGradesByStudentIDRequest, opts ...grpc.CallOption) (*GetAllLessonsGradesByStudentIDResponse, error)
 	SetGrade(ctx context.Context, in *SetGradeRequest, opts ...grpc.CallOption) (*SetGradeResponse, error)
+	SetTermGrade(ctx context.Context, in *SetTermGradeRequest, opts ...grpc.CallOption) (*SetTermGradeResponse, error)
+	DeleteGrade(ctx context.Context, in *DeleteGradeRequest, opts ...grpc.CallOption) (*DeleteGradeResponse, error)
+	ChangeGrade(ctx context.Context, in *ChangeGradeRequest, opts ...grpc.CallOption) (*ChangeGradeResponse, error)
 }
 
 type gradesClient struct {
@@ -62,6 +65,33 @@ func (c *gradesClient) SetGrade(ctx context.Context, in *SetGradeRequest, opts .
 	return out, nil
 }
 
+func (c *gradesClient) SetTermGrade(ctx context.Context, in *SetTermGradeRequest, opts ...grpc.CallOption) (*SetTermGradeResponse, error) {
+	out := new(SetTermGradeResponse)
+	err := c.cc.Invoke(ctx, "/grades.Grades/SetTermGrade", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gradesClient) DeleteGrade(ctx context.Context, in *DeleteGradeRequest, opts ...grpc.CallOption) (*DeleteGradeResponse, error) {
+	out := new(DeleteGradeResponse)
+	err := c.cc.Invoke(ctx, "/grades.Grades/DeleteGrade", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gradesClient) ChangeGrade(ctx context.Context, in *ChangeGradeRequest, opts ...grpc.CallOption) (*ChangeGradeResponse, error) {
+	out := new(ChangeGradeResponse)
+	err := c.cc.Invoke(ctx, "/grades.Grades/ChangeGrade", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GradesServer is the server API for Grades service.
 // All implementations must embed UnimplementedGradesServer
 // for forward compatibility
@@ -69,6 +99,9 @@ type GradesServer interface {
 	GetLessonGrades(context.Context, *GetLessonGradesRequest) (*GetLessonGradesResponse, error)
 	GetAllLessonsGradesByStudentID(context.Context, *GetAllLessonsGradesByStudentIDRequest) (*GetAllLessonsGradesByStudentIDResponse, error)
 	SetGrade(context.Context, *SetGradeRequest) (*SetGradeResponse, error)
+	SetTermGrade(context.Context, *SetTermGradeRequest) (*SetTermGradeResponse, error)
+	DeleteGrade(context.Context, *DeleteGradeRequest) (*DeleteGradeResponse, error)
+	ChangeGrade(context.Context, *ChangeGradeRequest) (*ChangeGradeResponse, error)
 	mustEmbedUnimplementedGradesServer()
 }
 
@@ -84,6 +117,15 @@ func (UnimplementedGradesServer) GetAllLessonsGradesByStudentID(context.Context,
 }
 func (UnimplementedGradesServer) SetGrade(context.Context, *SetGradeRequest) (*SetGradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetGrade not implemented")
+}
+func (UnimplementedGradesServer) SetTermGrade(context.Context, *SetTermGradeRequest) (*SetTermGradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetTermGrade not implemented")
+}
+func (UnimplementedGradesServer) DeleteGrade(context.Context, *DeleteGradeRequest) (*DeleteGradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteGrade not implemented")
+}
+func (UnimplementedGradesServer) ChangeGrade(context.Context, *ChangeGradeRequest) (*ChangeGradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeGrade not implemented")
 }
 func (UnimplementedGradesServer) mustEmbedUnimplementedGradesServer() {}
 
@@ -152,6 +194,60 @@ func _Grades_SetGrade_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Grades_SetTermGrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetTermGradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GradesServer).SetTermGrade(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grades.Grades/SetTermGrade",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GradesServer).SetTermGrade(ctx, req.(*SetTermGradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Grades_DeleteGrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GradesServer).DeleteGrade(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grades.Grades/DeleteGrade",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GradesServer).DeleteGrade(ctx, req.(*DeleteGradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Grades_ChangeGrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeGradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GradesServer).ChangeGrade(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grades.Grades/ChangeGrade",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GradesServer).ChangeGrade(ctx, req.(*ChangeGradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Grades_ServiceDesc is the grpc.ServiceDesc for Grades service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +266,18 @@ var Grades_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetGrade",
 			Handler:    _Grades_SetGrade_Handler,
+		},
+		{
+			MethodName: "SetTermGrade",
+			Handler:    _Grades_SetTermGrade_Handler,
+		},
+		{
+			MethodName: "DeleteGrade",
+			Handler:    _Grades_DeleteGrade_Handler,
+		},
+		{
+			MethodName: "ChangeGrade",
+			Handler:    _Grades_ChangeGrade_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

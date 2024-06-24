@@ -15,6 +15,7 @@ service UserService {
   rpc ChangeUserStatus (ChangeUserStatusRequest) returns (ChangeUserStatusResponse) {}
   rpc IsUserActive (IsUserActiveRequest) returns (IsUserActiveResponse) {}
   rpc GetStudentsByClassname (GetStudentsByClassnameRequest) returns (GetStudentsByClassnameResponse) {}
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {}
 }
 
 // Auth
@@ -116,4 +117,12 @@ message GetStudentsByClassnameRequest {
 
 message GetStudentsByClassnameResponse {
   repeated Student students = 1;
+}
+
+message DeleteUserRequest {
+  int64 user_id = 1;
+}
+
+message DeleteUserResponse {
+  int64 status = 1;
 }
